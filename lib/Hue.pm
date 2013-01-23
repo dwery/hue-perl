@@ -4,32 +4,27 @@ use strict;
 use warnings;
 use common::sense;
 
-our $VERSION = '0.1';
+our $VERSION = '0.2';
 
-use Moose;
-with 'Role::REST::Client';
+use Moo;
 
-has 'bridge' => ( is => "rw", isa => "Str" );
-has 'key' => ( is => "rw", isa => "Str" );
+has 'bridge' => ( is => 'rw' );
+has 'key' => ( is => 'rw' );
+has 'agent' => ( is => 'rw' );
 
 use Hue::Light;
+use LWP::UserAgent;
+use JSON::XS;
 
 use Data::Dumper;
 use Carp;
 
-sub new
+sub BUILD
 {
-	my ($proto, @args) = @_;
+	my ($self) = @_;
 
-	my $class = ref $proto || $proto;  
-
-	my $self = $class->SUPER::new(@args);
-
-	if ($self) {
-		$self->init;
-	}
-
-	return $self;
+	$self->agent(new LWP::UserAgent);
+	$self->init;
 }
 
 sub init
@@ -47,9 +42,35 @@ sub init
 	
 	croak "missing hue key"
 		unless defined $self->key;
+}
 
-	$self->server($self->bridge);
-	$self->type('application/json');
+sub get
+{
+	my ($self, $uri) = @_;
+
+	my $req = HTTP::Request->new('GET', $uri);
+
+	$req->content_type('application/json');
+
+	my $res = $self->agent->request($req);
+
+	say $res->status_line;
+
+	return decode_json($res->decoded_content);
+}
+
+sub put
+{
+	my ($self, $uri, $data) = @_;
+
+	my $req = HTTP::Request->new('PUT', $uri);
+
+	$req->content_type('application/json');
+	$req->content(encode_json($data));
+
+	my $res = $self->agent->request($req);
+
+	return decode_json($res->decoded_content);
 }
 
 sub config
@@ -67,11 +88,16 @@ sub config
 	say Dumper($res->data);
 }
 
+sub discovery
+{
+	
+}
+
 sub path_to
 {
 	my ($self, @endp) = @_;
 
-	my $uri = '/' . join('/', 'api', $self->key, @endp);
+	my $uri = join('/', $self->bridge, 'api', $self->key, @endp);
 #	say $uri;
 	return $uri;
 }
