@@ -12,6 +12,8 @@ use Hue::LightSet;
 #		'key'		=> '.....',
 	});
 
+	$hue->debug(1);
+
 	my $commands = {
 
 		'light'		=> 'number',

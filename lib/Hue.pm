@@ -11,6 +11,7 @@ use Moo;
 has 'bridge' => ( is => 'rw' );
 has 'key' => ( is => 'rw' );
 has 'agent' => ( is => 'rw' );
+has 'debug' => ( is => 'rw' );
 
 use Hue::Light;
 use LWP::UserAgent;
@@ -54,9 +55,15 @@ sub get
 
 	my $res = $self->agent->request($req);
 
-	say $res->status_line;
+	if ($res->is_success) {
 
-	return decode_json($res->decoded_content);
+		say $res->status_line
+			if $self->debug;
+
+		return decode_json($res->decoded_content);
+	} 
+
+	return undef;
 }
 
 sub put
@@ -70,22 +77,25 @@ sub put
 
 	my $res = $self->agent->request($req);
 
-	return decode_json($res->decoded_content);
+	if ($res->is_success) {
+
+		say $res->status_line
+			if $self->debug;
+
+		return decode_json($res->decoded_content);
+	} 
+
+	return undef;
 }
 
 sub config
 {
 	my ($self) = @_;
 
-	say 'config';
-	say $self->bridge;
-
 	$self->server($self->bridge);
 	$self->type('application/json');
 
-	my $res = $self->get($self->path_to(''));
-
-	say Dumper($res->data);
+	return $self->get($self->path_to(''));
 }
 
 sub discovery
@@ -98,7 +108,10 @@ sub path_to
 	my ($self, @endp) = @_;
 
 	my $uri = join('/', $self->bridge, 'api', $self->key, @endp);
-#	say $uri;
+
+	say $uri
+		if $self->debug;
+
 	return $uri;
 }
 
