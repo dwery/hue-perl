@@ -54,6 +54,9 @@ sub process
 		say $res->status_line
 			if $self->debug;
 
+		say Dumper(decode_json($res->decoded_content))
+			if $self->debug;
+
 		return decode_json($res->decoded_content);
 	} 
 	
@@ -95,7 +98,9 @@ sub config
 
 sub discovery
 {
-	
+	my ($self) = @_;
+
+	return $self->get('https://www.meethue.com/api/nupnp');
 }
 
 sub path_to

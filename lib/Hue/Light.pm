@@ -26,8 +26,6 @@ sub commit
 
 	my $r = $self->hue->put($self->hue->path_to('lights', $self->id, 'state'), $self->_data);
 
-	say Dumper($r);
-
 	$self->_data({});
 	return $r;
 }
