@@ -45,15 +45,9 @@ sub init
 		unless defined $self->key;
 }
 
-sub get
+sub process
 {
-	my ($self, $uri) = @_;
-
-	my $req = HTTP::Request->new('GET', $uri);
-
-	$req->content_type('application/json');
-
-	my $res = $self->agent->request($req);
+	my ($self, $res) = @_;
 
 	if ($res->is_success) {
 
@@ -62,8 +56,19 @@ sub get
 
 		return decode_json($res->decoded_content);
 	} 
-
+	
 	return undef;
+}
+
+sub get
+{
+	my ($self, $uri) = @_;
+
+	my $req = HTTP::Request->new('GET', $uri);
+
+	$req->content_type('application/json');
+
+	return $self->process($self->agent->request($req));
 }
 
 sub put
@@ -75,17 +80,7 @@ sub put
 	$req->content_type('application/json');
 	$req->content(encode_json($data));
 
-	my $res = $self->agent->request($req);
-
-	if ($res->is_success) {
-
-		say $res->status_line
-			if $self->debug;
-
-		return decode_json($res->decoded_content);
-	} 
-
-	return undef;
+	return $self->process($self->agent->request($req));
 }
 
 sub config
