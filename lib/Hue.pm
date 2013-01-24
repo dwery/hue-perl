@@ -90,10 +90,33 @@ sub config
 {
 	my ($self) = @_;
 
-	$self->server($self->bridge);
-	$self->type('application/json');
-
 	return $self->get($self->path_to(''));
+}
+
+sub schedules
+{
+	my ($self) = @_;
+
+	return $self->get($self->path_to('schedules'));
+}
+
+sub lights
+{
+	my ($self) = @_;
+
+	my $config = $self->config
+		or return undef;
+
+	my @lights = ();
+
+	foreach my $key (sort keys %{$config->{'lights'}}) {
+
+		my $light = $config->{'lights'}{$key};
+
+		push @lights, Hue::Light->new({ 'hue' => $self, 'id' => $key, 'data' => $light });
+	}
+
+	return \@lights;
 }
 
 sub discovery

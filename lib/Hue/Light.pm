@@ -8,7 +8,7 @@ use Data::Dumper;
 
 use base qw(Class::Accessor);
 
-__PACKAGE__->mk_accessors( qw / id hue _trx _data / );
+__PACKAGE__->mk_accessors( qw / id hue _trx params data / );
 
 sub begin
 {
@@ -24,9 +24,9 @@ sub commit
 
 	$self->_trx(0);
 
-	my $r = $self->hue->put($self->hue->path_to('lights', $self->id, 'state'), $self->_data);
+	my $r = $self->hue->put($self->hue->path_to('lights', $self->id, 'state'), $self->params);
 
-	$self->_data({});
+	$self->params({});
 	return $r;
 }
 
@@ -38,7 +38,7 @@ sub in_transaction
 sub merge_param
 {
         my ($self, $param) = @_;
-	$self->_data(merge($self->_data || {}, $param));
+	$self->params(merge($self->params || {}, $param));
 	return $self;
 }
 
@@ -93,5 +93,11 @@ sub transitiontime
 {
 	return (shift)->merge_param({ 'transitiontime' => int shift });
 }
+
+sub name { return (shift)->data->{'name'}; }
+sub type { return (shift)->data->{'type'}; }
+sub modelid { return (shift)->data->{'modelid'}; }
+sub swversion { return (shift)->data->{'swversion'}; }
+
 
 1;
