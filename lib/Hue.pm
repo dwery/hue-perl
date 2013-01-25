@@ -13,7 +13,9 @@ has 'key' => ( is => 'rw' );
 has 'agent' => ( is => 'rw' );
 has 'debug' => ( is => 'rw' );
 
+use Hue::UPnP;
 use Hue::Light;
+
 use LWP::UserAgent;
 use JSON::XS;
 
@@ -123,7 +125,33 @@ sub discovery
 {
 	my ($self) = @_;
 
-	return $self->get('https://www.meethue.com/api/nupnp');
+	my $devices = $self->nupnp;
+	return $devices if scalar @$devices;
+
+	return $self->pnp;
+}
+
+sub nupnp
+{
+	my ($self) = @_;
+
+	my $data = $self->get('https://www.meethue.com/api/nupnp');
+	return [] unless defined $data;
+
+	my @devices = ();
+
+	foreach (@$data) {
+		push @devices, $_->{'internalipaddress'};
+	}
+
+	return \@devices;
+}
+
+sub upnp
+{
+	my ($self) = @_;
+
+	return Hue::UPnP::upnp();
 }
 
 sub path_to
@@ -146,3 +174,12 @@ sub light
 }
 
 1;
+
+__DATA__
+$VAR1 = [
+          {
+            'macaddress' => '00:17:88:09:c4:a1',
+            'internalipaddress' => '192.168.1.122',
+            'id' => '001788fffe09c4a1'
+          }
+        ];

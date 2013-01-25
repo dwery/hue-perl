@@ -8,4 +8,14 @@ use Hue;
 
 	my $hue = Hue->new({ 'debug' => 1 });
 
-	$hue->discovery;
+	say 'finding using remote upnp...';
+
+	foreach (@{$hue->nupnp}) {
+		say $_;
+	}
+
+	say "\nfinding using local upnp...";
+
+	foreach (@{$hue->upnp}) {
+		say $_;
+	}
