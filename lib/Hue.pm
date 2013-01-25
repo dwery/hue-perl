@@ -4,7 +4,7 @@ use strict;
 use warnings;
 use common::sense;
 
-our $VERSION = '0.2';
+our $VERSION = '0.3';
 
 use Moo;
 
@@ -164,11 +164,3 @@ sub light
 
 1;
 
-__DATA__
-$VAR1 = [
-          {
-            'macaddress' => '00:17:88:09:c4:a1',
-            'internalipaddress' => '192.168.1.122',
-            'id' => '001788fffe09c4a1'
-          }
-        ];
