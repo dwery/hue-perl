@@ -126,31 +126,20 @@ sub discovery
 	my ($self) = @_;
 
 	my $devices = $self->nupnp;
-	return $devices if scalar @$devices;
 
-	return $self->pnp;
+	return scalar @$devices ? $devices : $self->upnp;
 }
 
 sub nupnp
 {
-	my ($self) = @_;
+	my $data = (shift)->get('https://www.meethue.com/api/nupnp')
+		or return [];
 
-	my $data = $self->get('https://www.meethue.com/api/nupnp');
-	return [] unless defined $data;
-
-	my @devices = ();
-
-	foreach (@$data) {
-		push @devices, $_->{'internalipaddress'};
-	}
-
-	return \@devices;
+	return [ map { $_->{'internalipaddress'} } @$data ];
 }
 
 sub upnp
 {
-	my ($self) = @_;
-
 	return Hue::UPnP::upnp();
 }
 
