@@ -1,21 +1,19 @@
-#!/usr/bin/perl -w
+#!/usr/bin/env perl
 
-use lib 'lib';
-use local::lib;
 use common::sense;
 
-use Hue;
+use Device::Hue;
 
-	my $hue = Hue->new({ 'debug' => 1 });
+my $hue = Device::Hue->new({ 'debug' => 1 });
 
-	say 'finding using remote upnp...';
+say 'finding using remote upnp...';
 
-	foreach (@{$hue->nupnp}) {
-		say $_;
-	}
+foreach (@{$hue->nupnp}) {
+	say $_;
+}
 
-	say "\nfinding using local upnp...";
+say "\nfinding using local upnp...";
 
-	foreach (@{$hue->upnp}) {
-		say $_;
-	}
+foreach (@{$hue->upnp}) {
+	say $_;
+}
