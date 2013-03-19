@@ -1,9 +1,0 @@
-MANIFEST
-Makefile.PL
-examples/hue-kelvin.pl
-examples/hue-wake.pl
-examples/hue-lightset.pl
-examples/hue.pl
-lib/Hue.pm
-lib/Hue/LightSet.pm
-lib/Hue/Light.pm

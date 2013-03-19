@@ -1,10 +1,9 @@
-package Hue;
-
 use strict;
+
+package Device::Hue;
+
 use warnings;
 use common::sense;
-
-our $VERSION = '0.3';
 
 use Moo;
 
@@ -13,8 +12,8 @@ has 'key' => ( is => 'rw' );
 has 'agent' => ( is => 'rw' );
 has 'debug' => ( is => 'rw' );
 
-use Hue::UPnP;
-use Hue::Light;
+use Device::Hue::UPnP;
+use Device::Hue::Light;
 
 use LWP::UserAgent;
 use JSON::XS;
@@ -62,7 +61,7 @@ sub process
 		return decode_json($res->decoded_content);
 	} 
 	
-	return undef;
+	return;
 }
 
 sub get
@@ -115,7 +114,7 @@ sub lights
 
 		my $light = $config->{'lights'}{$key};
 
-		push @lights, Hue::Light->new({ 'hue' => $self, 'id' => $key, 'data' => $light });
+		push @lights, Device::Hue::Light->new({ 'hue' => $self, 'id' => $key, 'data' => $light });
 	}
 
 	return \@lights;
@@ -140,7 +139,7 @@ sub nupnp
 
 sub upnp
 {
-	return Hue::UPnP::upnp();
+	return Device::Hue::UPnP::upnp();
 }
 
 sub path_to
@@ -159,8 +158,10 @@ sub light
 {
 	my ($self, $id) = @_;
 
-	return Hue::Light->new({ 'hue' => $self, 'id' => $id });
+	return Device::Hue::Light->new({ 'hue' => $self, 'id' => $id });
 }
 
 1;
+
+# ABSTRACT: Perl module for the Philips Hue light system
 
