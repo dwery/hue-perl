@@ -28,8 +28,8 @@ use Device::Hue::LightSet;
 
 	my @cmds = @ARGV;
 
-	 while (scalar @cmds)
-        {
+	while (scalar @cmds) {
+
                 my $cmd = shift @cmds;
 
                 # check command
