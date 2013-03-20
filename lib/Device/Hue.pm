@@ -16,6 +16,8 @@ use Device::Hue::UPnP;
 use Device::Hue::Light;
 
 use LWP::UserAgent;
+use LWP::Protocol::https;
+
 use JSON::XS;
 
 use Data::Dumper;
@@ -59,7 +61,9 @@ sub process
 			if $self->debug;
 
 		return decode_json($res->decoded_content);
-	} 
+	}  else {
+		say "Request failed: " . $res->status_line if $self->debug;
+	}
 	
 	return;
 }
@@ -68,6 +72,8 @@ sub get
 {
 	my ($self, $uri) = @_;
 
+	say "GET $uri" if $self->debug;
+	
 	my $req = HTTP::Request->new('GET', $uri);
 
 	$req->content_type('application/json');
