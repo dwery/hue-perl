@@ -4,16 +4,22 @@ use common::sense;
 
 use Device::Hue;
 
-my $hue = Device::Hue->new({ 'debug' => 1 });
+# Pass 'unknown' as bridge and key as we're trying to discover the bridge, so we don't have that info yet
+my $hue = Device::Hue->new({ 'debug' => 0, 'bridge' => 'unknown', 'key' => 'unknown' });
 
-say 'finding using remote upnp...';
+say 'Detecting through remote upnp...';
 
 foreach (@{$hue->nupnp}) {
-	say $_;
+	say "+ Bridge at $_";
 }
 
-say "\nfinding using local upnp...";
+say "Detecting through local discovery...";
 
 foreach (@{$hue->upnp}) {
-	say $_;
+	say "+ Bridge at $_";
 }
+
+say "\nIf one or more bridges were detected, set the environment variable 'HUE_BRIDGE' to one of the detected IP addresses to use the other examples in this folder.";
+say "Note: you'll also need an API key that is granted access by the bridge. See http://developers.meethue.com/gettingstarted.html";
+say "If you have acquired an API key, set the environment variable 'HUE_KEY' to use the examples."
+
