@@ -171,3 +171,15 @@ sub light
 
 # ABSTRACT: Perl module for the Philips Hue light system
 
+=head1 DESCRIPTION
+
+A perl module to interface Philips Hue devices. See http://meethue.com
+
+To use the examples in the examples folder, please configure the environment appropriately:
+
+=over
+
+=item export HUE_BRIDGE="http://192.168.1.123"
+=item export HUE_KEY="7c1590fb6089be2129260acb2df53372"
+
+=back
