@@ -1,16 +1,14 @@
-#!/usr/bin/perl -w
+#!/usr/bin/env perl
 
-use lib 'lib';
-use local::lib;
 use common::sense;
 
-use Hue;
+use Device::Hue;
 
-	die "usage: $0 <light number> <color temperature (K)>"
+die "usage: $0 <light number> <color temperature (K)>"
 		unless scalar @ARGV == 2;
 
-	my ($light, $ct) = @ARGV;
+my ($light, $ct) = @ARGV;
 
-	my $hue = new Hue;
+my $hue = new Device::Hue;
 
-	$hue->light($light)->ct_k($ct);
+$hue->light($light)->ct_k($ct);

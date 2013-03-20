@@ -1,19 +1,15 @@
-#!/usr/bin/perl -w
+#!/usr/bin/env perl
 
-use lib 'lib';
-use local::lib;
+use Device::Hue;
 use common::sense;
 
-use Hue;
+my $hue = Device::Hue->new({ 'debug' => 1 });
 
-	my $hue = Hue->new({ 'debug' => 1 });
+my $lights = $hue->lights;
 
-	my $lights = $hue->lights;
-
-
-	foreach (@$lights) {
-		say join(' - ', $_->id, $_->modelid, $_->name);
-	}
+foreach (@$lights) {
+	say join(" - ", $_->id, $_->modelid, $_->name);
+}
 
 
 

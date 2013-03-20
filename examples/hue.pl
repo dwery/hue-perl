@@ -1,13 +1,11 @@
-#!/usr/bin/perl -w
+#!/usr/bin/env perl
 
-use lib 'lib';
-use local::lib;
 use common::sense;
 
-use Hue;
-use Hue::LightSet;
+use Device::Hue;
+use Device::Hue::LightSet;
 
-	my $hue = Hue->new({
+	my $hue = Device::Hue->new({
 #		'bridge'	=> 'http://.....',
 #		'key'		=> '.....',
 	});
@@ -78,7 +76,7 @@ sub job
 			if defined $light
 			and $light->in_transaction;
 
-		$light = Hue::LightSet->create(map { $hue->light($_); } split(/,/, $arg));
+		$light = Device::Hue::LightSet->create(map { $hue->light($_); } split(/,/, $arg));
 		$light->begin;
 		return;
 	}

@@ -1,15 +1,13 @@
-#!/usr/bin/perl -w
+#!/usr/bin/env perl
 
-use lib 'lib';
-use local::lib;
 use common::sense;
 
-use Hue;
-use Hue::LightSet;
+use Device::Hue;
+use Device::Hue::LightSet;
 
-	my $hue = new Hue;
+	my $hue = new Device::Hue;
 
-	my $set = Hue::LightSet->create($hue->light(1), $hue->light(3));
+	my $set = Device::Hue::LightSet->create($hue->light(1), $hue->light(3));
 
 	$set->on;
 

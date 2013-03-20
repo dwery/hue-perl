@@ -1,4 +1,4 @@
-package Hue::Light;
+package Device::Hue::Light;
 
 use common::sense;
 use Class::Accessor;
