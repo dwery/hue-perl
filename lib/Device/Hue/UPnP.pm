@@ -1,6 +1,7 @@
+use strict;
+
 package Device::Hue::UPnP;
 
-use strict;
 use warnings;
 
 use Carp;
