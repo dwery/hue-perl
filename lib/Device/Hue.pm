@@ -8,9 +8,9 @@ use common::sense;
 use Moo;
 
 has 'bridge' => ( is => 'rw' );
-has 'key' => ( is => 'rw' );
-has 'agent' => ( is => 'rw' );
-has 'debug' => ( is => 'rw' );
+has 'key'    => ( is => 'rw' );
+has 'agent'  => ( is => 'rw' );
+has 'debug'  => ( is => 'rw' );
 
 use Device::Hue::UPnP;
 use Device::Hue::Light;
@@ -23,148 +23,138 @@ use JSON::XS;
 use Data::Dumper;
 use Carp;
 
-sub BUILD
-{
-	my ($self) = @_;
+sub BUILD {
+    my ($self) = @_;
 
-	$self->agent(new LWP::UserAgent);
-	$self->init;
+    $self->agent( new LWP::UserAgent );
+    $self->init;
 }
 
-sub init
-{
-	my ($self) = @_;
+sub init {
+    my ($self) = @_;
 
-	$self->bridge($ENV{'HUE_BRIDGE'})
-		if defined $ENV{'HUE_BRIDGE'};
+    $self->bridge( $ENV{'HUE_BRIDGE'} )
+        if defined $ENV{'HUE_BRIDGE'};
 
-	$self->key($ENV{'HUE_KEY'})
-		if defined $ENV{'HUE_KEY'};
+    $self->key( $ENV{'HUE_KEY'} )
+        if defined $ENV{'HUE_KEY'};
 
-	croak "missing hue bridge"
-		unless defined $self->bridge;
-	
-	croak "missing hue key"
-		unless defined $self->key;
+    croak "missing hue bridge"
+        unless defined $self->bridge;
+
+    croak "missing hue key"
+        unless defined $self->key;
 }
 
-sub process
-{
-	my ($self, $res) = @_;
+sub process {
+    my ( $self, $res ) = @_;
 
-	if ($res->is_success) {
+    if ( $res->is_success ) {
 
-		say $res->status_line
-			if $self->debug;
+        say $res->status_line
+            if $self->debug;
 
-		say Dumper(decode_json($res->decoded_content))
-			if $self->debug;
+        say Dumper( decode_json( $res->decoded_content ) )
+            if $self->debug;
 
-		return decode_json($res->decoded_content);
-	}  else {
-		say "Request failed: " . $res->status_line if $self->debug;
-	}
-	
-	return;
+        return decode_json( $res->decoded_content );
+    }
+    else {
+        say "Request failed: " . $res->status_line if $self->debug;
+    }
+
+    return;
 }
 
-sub get
-{
-	my ($self, $uri) = @_;
+sub get {
+    my ( $self, $uri ) = @_;
 
-	say "GET $uri" if $self->debug;
-	
-	my $req = HTTP::Request->new('GET', $uri);
+    say "GET $uri" if $self->debug;
 
-	$req->content_type('application/json');
+    my $req = HTTP::Request->new( 'GET', $uri );
 
-	return $self->process($self->agent->request($req));
+    $req->content_type('application/json');
+
+    return $self->process( $self->agent->request($req) );
 }
 
-sub put
-{
-	my ($self, $uri, $data) = @_;
+sub put {
+    my ( $self, $uri, $data ) = @_;
 
-	my $req = HTTP::Request->new('PUT', $uri);
+    my $req = HTTP::Request->new( 'PUT', $uri );
 
-	$req->content_type('application/json');
-	$req->content(encode_json($data));
+    $req->content_type('application/json');
+    $req->content( encode_json($data) );
 
-	return $self->process($self->agent->request($req));
+    return $self->process( $self->agent->request($req) );
 }
 
-sub config
-{
-	my ($self) = @_;
+sub config {
+    my ($self) = @_;
 
-	return $self->get($self->path_to(''));
+    return $self->get( $self->path_to('') );
 }
 
-sub schedules
-{
-	my ($self) = @_;
+sub schedules {
+    my ($self) = @_;
 
-	return $self->get($self->path_to('schedules'));
+    return $self->get( $self->path_to('schedules') );
 }
 
-sub lights
-{
-	my ($self) = @_;
+sub lights {
+    my ($self) = @_;
 
-	my $config = $self->config
-		or return;
+    my $config = $self->config
+        or return;
 
-	my @lights = ();
+    my @lights = ();
 
-	foreach my $key (sort keys %{$config->{'lights'}}) {
+    foreach my $key ( sort keys %{ $config->{'lights'} } ) {
 
-		my $light = $config->{'lights'}{$key};
+        my $light = $config->{'lights'}{$key};
 
-		push @lights, Device::Hue::Light->new({ 'hue' => $self, 'id' => $key, 'data' => $light });
-	}
+        push @lights,
+            Device::Hue::Light->new(
+            { 'hue' => $self, 'id' => $key, 'data' => $light } );
+    }
 
-	return \@lights;
+    return \@lights;
 }
 
-sub discovery
-{
-	my ($self) = @_;
+sub discovery {
+    my ($self) = @_;
 
-	my $devices = $self->nupnp;
+    my $devices = $self->nupnp;
 
-	return scalar @$devices ? $devices : $self->upnp;
+    return scalar @$devices ? $devices : $self->upnp;
 }
 
-sub nupnp
-{
-	my $data = (shift)->get('https://www.meethue.com/api/nupnp')
-		or return [];
+sub nupnp {
+    my $data = (shift)->get('https://www.meethue.com/api/nupnp')
+        or return [];
 
-	return [ map { $_->{'internalipaddress'} } @$data ];
+    return [ map { $_->{'internalipaddress'} } @$data ];
 }
 
-sub upnp
-{
-	return Device::Hue::UPnP::upnp();
+sub upnp {
+    return Device::Hue::UPnP::upnp();
 }
 
-sub path_to
-{
-	my ($self, @endp) = @_;
+sub path_to {
+    my ( $self, @endp ) = @_;
 
-	my $uri = join('/', $self->bridge, 'api', $self->key, @endp);
+    my $uri = join( '/', $self->bridge, 'api', $self->key, @endp );
 
-	say $uri
-		if $self->debug;
+    say $uri
+        if $self->debug;
 
-	return $uri;
+    return $uri;
 }
 
-sub light
-{
-	my ($self, $id) = @_;
+sub light {
+    my ( $self, $id ) = @_;
 
-	return Device::Hue::Light->new({ 'hue' => $self, 'id' => $id });
+    return Device::Hue::Light->new( { 'hue' => $self, 'id' => $id } );
 }
 
 1;
