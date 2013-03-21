@@ -112,7 +112,7 @@ sub lights
 	my ($self) = @_;
 
 	my $config = $self->config
-		or return undef;
+		or return;
 
 	my @lights = ();
 

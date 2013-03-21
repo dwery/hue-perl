@@ -1,3 +1,5 @@
+use strict;
+
 package Device::Hue::Light;
 
 use common::sense;
