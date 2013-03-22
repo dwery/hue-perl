@@ -39,6 +39,12 @@ sub init {
     $self->key( $ENV{'HUE_KEY'} )
         if defined $ENV{'HUE_KEY'};
 
+    # Extend the bridge address with http if it is not present.
+    my $bridge = $self->bridge;
+    $self->bridge('http://' . $bridge) if ($bridge =~ /^\d/);
+
+    say "Using bridge: '" . $self->bridge . "'";
+
     croak "missing hue bridge"
         unless defined $self->bridge;
 
@@ -169,8 +175,84 @@ To use the examples in the examples folder, please configure the environment app
 
 =over
 
-=item export HUE_BRIDGE="http://192.168.1.123"
+=item export HUE_BRIDGE="192.168.1.123"
 
 =item export HUE_KEY="7c1590fb6089be2129260acb2df53372"
 
 =back
+
+=head1 METHODS
+
+=head2 C<new(%parameters)>
+
+This is the constructor of the Device::Hue object. Supported parameters are:
+
+=over
+
+=item bridge
+
+=item key
+
+=item agent
+
+= debug
+
+=back
+
+=head2 C<config()>
+
+To be documented
+
+=head2 C<discovery()>
+
+Tries to discover a bridge, returns the IP address
+
+=head2 C<get()>
+
+Performs a HTTP get to the bridge
+
+=head2 C<init()>
+
+To be documented
+
+=head2 C<light()>
+
+To be documented
+
+=head2 C<lights()>
+
+To be documented
+
+=head2 C<nupnp()>
+
+Tries to dicover a bridge using the remote API.
+
+=head2 C<path_to()>
+
+To be documented
+
+=head2 C<process()>
+
+To be documented
+
+=head2 C<process()>
+
+To be documented
+
+=head2 C<put()>
+
+Perform an HTTP put request
+
+=head2 C<schedules()>
+
+To be documented
+
+=head2 C<upnp()>
+
+To be documented
+
+=head2 C<BUILD>
+
+Implements the constructor with Moo.
+
+=cut

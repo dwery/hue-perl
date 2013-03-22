@@ -72,3 +72,13 @@ ST: upnp:rootdevice
 USN: uuid:2f402f80-da50-11e1-9b23-00171809c4a1::upnp:rootdevice
 
 # ABSTRACT: Helper for autodiscovery of the bridge with Device::Hue
+
+=head1 DESCRIPTION
+
+Helper module that is used to autodiscover the Hue bridge.
+
+=head1 METHODS
+
+=head2 C<upnp>
+
+Searches for bridges and returns their IP address.

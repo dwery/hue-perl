@@ -101,3 +101,47 @@ sub swversion { return (shift)->data->{'swversion'}; }
 1;
 
 # ABSTRACT: Light item for use in Device::Hue
+
+=head1 DESCRIPTION
+
+=head1 METHODS
+
+=head2 C<begin()>
+
+=head2 C<bri()>
+
+=head2 C<commit()>
+
+=head2 C<ct>
+
+=head2 C<ct_k>
+
+=head2 C<in_transaction>
+
+=head2 C<merge_param>
+
+=head2 C<modelid>
+
+=head2 C<name>
+
+=head2 C<off()>
+
+Turn a light off.
+
+=head2 C<on()>
+
+Switches a light bulb on. This function does restore the last color state of the light bulb.
+
+=head2 C<set_state()>
+
+=head2 C<swversion()>
+
+Returns the software version of the light bulb.
+
+=head2 C<transitiontime(time)>
+
+Sets the time the transition from one state to another will take in seconds.
+
+=head2 C<type>
+
+=cut
