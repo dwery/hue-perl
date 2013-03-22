@@ -43,8 +43,6 @@ sub init {
     my $bridge = $self->bridge;
     $self->bridge('http://' . $bridge) if ($bridge =~ /^\d/);
 
-    say "Using bridge: '" . $self->bridge . "'";
-
     croak "missing hue bridge"
         unless defined $self->bridge;
 
