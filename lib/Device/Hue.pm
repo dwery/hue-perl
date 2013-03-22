@@ -149,6 +149,9 @@ sub upnp {
 sub path_to {
     my ( $self, @endp ) = @_;
 
+    my $bridge = $self->bridge;
+    # Extend the bridge address with http if it is not present.
+    $bridge = 'http://' . $bridge if ($bridge =~ /^\d/);
     my $uri = join( '/', $self->bridge, 'api', $self->key, @endp );
 
     say $uri
