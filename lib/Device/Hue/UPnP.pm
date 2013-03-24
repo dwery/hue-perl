@@ -15,7 +15,7 @@ sub upnp {
     my $sock = IO::Socket::Multicast->new(
         'LocalPort' => $port,
         'ReuseAddr' => 1,
-    ) or croack();
+    ) or croak("Could not create multicast socket: $!");
 
     $sock->mcast_add($addr);
     $sock->mcast_loopback(0);
