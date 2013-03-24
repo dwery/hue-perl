@@ -16,7 +16,7 @@ sub upnp
 	my $sock = IO::Socket::Multicast->new(
 		'LocalPort'	=> $port,
 		'ReuseAddr'	=> 1,
-	) or croack();
+	) or croak();
 
 	$sock->mcast_add($addr);
 	$sock->mcast_loopback(0);
