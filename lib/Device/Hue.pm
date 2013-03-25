@@ -163,6 +163,7 @@ sub path_to
 	my ($self, @endp) = @_;
 
 	my $bridge = $self->bridge;
+
 	# Extend the bridge address with http if it is not present.
 	$bridge = 'http://' . $bridge if ($bridge =~ /^\d/);
 	my $uri = join('/', $self->bridge, 'api', $self->key, @endp);
@@ -188,7 +189,8 @@ sub light
 
 A perl module to interface Philips Hue devices. See http://meethue.com
 
-To use the examples in the examples folder, please configure the environment appropriately:
+To use the examples in the examples folder, please configure the environment appropriately (using your own IP address
+and API key):
 
 =over
 
@@ -198,9 +200,9 @@ To use the examples in the examples folder, please configure the environment app
 
 =back
 
-=head1 METHODS
+=head1 CONSTRUCTOR METHODS
 
-=head2 C<new(%parameters)>
+=head2 $hue = Device::Hue->new({ %parameters })
 
 This is the constructor of the Device::Hue object. Supported parameters are:
 
@@ -208,68 +210,38 @@ This is the constructor of the Device::Hue object. Supported parameters are:
 
 =item bridge
 
+IP address of the hue bridge, in dotted notation numeric form
+
 =item key
+
+Your API key, something like 7c1590fb6089be2129260acb2df53372
 
 =item agent
 
-= debug
+Defaults to LWP::UserAgent
+
+=item debug
+
+Set to 1 to enable debugging output
 
 =back
 
-=head2 C<config()>
+=head1 METHODS
+
+=head2 $hue->discovery
+
+Tries to discover a bridge, returns an arrayref of IP addresses
+
+=head2 $hue->light($id)
+
+Return a Device::Hue::Light object for the specified light id
+
+=head2 $hue->lights
 
 To be documented
 
-=head2 C<discovery()>
+=head2 $hue->nupnp
 
-Tries to discover a bridge, returns the IP address
-
-=head2 C<get()>
-
-Performs a HTTP get to the bridge
-
-=head2 C<init()>
-
-To be documented
-
-=head2 C<light()>
-
-To be documented
-
-=head2 C<lights()>
-
-To be documented
-
-=head2 C<nupnp()>
-
-Tries to dicover a bridge using the remote API.
-
-=head2 C<path_to()>
-
-To be documented
-
-=head2 C<process()>
-
-To be documented
-
-=head2 C<process()>
-
-To be documented
-
-=head2 C<put()>
-
-Perform an HTTP put request
-
-=head2 C<schedules()>
-
-To be documented
-
-=head2 C<upnp()>
-
-To be documented
-
-=head2 C<BUILD>
-
-Implements the constructor with Moo.
+Tries to discover a bridge using the remote API, returns an arrayref of IP addresses
 
 =cut
