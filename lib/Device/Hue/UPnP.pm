@@ -8,23 +8,24 @@ use Carp;
 use IO::Select;
 use IO::Socket::Multicast;
 
-sub upnp {
-    my $addr = '239.255.255.250';
-    my $port = 1900;
+sub upnp
+{
+	my $addr = '239.255.255.250';
+	my $port = 1900;
 
-    my $sock = IO::Socket::Multicast->new(
-        'LocalPort' => $port,
-        'ReuseAddr' => 1,
-    ) or croak("Could not create multicast socket: $!");
+	my $sock = IO::Socket::Multicast->new(
+		'LocalPort' => $port,
+		'ReuseAddr' => 1,
+	) or croak("Could not create multicast socket: $!");
 
-    $sock->mcast_add($addr);
-    $sock->mcast_loopback(0);
+	$sock->mcast_add($addr);
+	$sock->mcast_loopback(0);
 
-    my $sel = new IO::Select;
+	my $sel = new IO::Select;
 
-    $sel->add($sock);
+	$sel->add($sock);
 
-    my $q = <<EOT;
+	my $q = <<EOT;
 M-SEARCH * HTTP/1.1
 HOST: 239.255.255.250:1900
 MAN: "ssdp:discover"
@@ -33,31 +34,30 @@ MX: 0
 
 EOT
 
-    $q =~ s/\n/\r\n/g;
+	$q =~ s/\n/\r\n/g;
 
-    $sock->mcast_send( $q, $addr . ':' . $port );
+	$sock->mcast_send($q, $addr . ':' . $port);
 
-    my %devices;
+	my %devices;
 
-    while (1) {
+	while (1) {
 
-        my @ready = $sel->can_read(2);
-        last unless scalar @ready;
+		my @ready = $sel->can_read(2);
+		last unless scalar @ready;
 
-        my $data;
-        $sock->recv( $data, 4096 );
+		my $data;
+		$sock->recv($data, 4096);
 
-        # dirty hack
-        if ( $data =~ /uuid:2f402f80-da50-11e1-9b23/m ) {
+		# dirty hack
+		if ($data =~ /uuid:2f402f80-da50-11e1-9b23/m) {
 
-            if ( $data =~ m'LOCATION: http://([\d\.]+):80/description.xml'm )
-            {
-                $devices{$1} = 1;
-            }
-        }
-    }
+			if ($data =~ m'LOCATION: http://([\d\.]+):80/description.xml'm) {
+				$devices{$1} = 1;
+			}
+		}
+	}
 
-    return [ keys %devices ];
+	return [ keys %devices ];
 }
 
 1;
