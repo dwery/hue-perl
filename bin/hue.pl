@@ -1,5 +1,6 @@
 #!/usr/bin/env perl
 
+use strict;
 use common::sense;
 
 use Device::Hue;
@@ -39,7 +40,8 @@ while ( scalar @cmds ) {
         unless grep { $cmd eq $_ } keys %$commands;
 
     # fetch command option if required
-    my $what = shift @cmds
+    my $what;
+    $what = shift @cmds
         if defined $commands->{$cmd};
 }
 
@@ -48,7 +50,8 @@ my $light = undef;
 while ( scalar @ARGV ) {
 
     my $cmd = shift;
-    my $arg = shift if defined $commands->{$cmd};
+    my $arg;
+    $arg = shift if defined $commands->{$cmd};
 
     my $rc = job( $cmd, $arg );
 }
@@ -142,3 +145,6 @@ sub help {
         "\n         hue.pl light 1,3 bri 10 kelvin 3000 on light 2 bri 100 on light 1,2 off\n";
     print "\n";
 }
+
+# PODNAME: hue.pl
+# ABSTRACT: interface to Philips Hue devices through the Device::Hue perl module

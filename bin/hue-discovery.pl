@@ -1,5 +1,6 @@
 #!/usr/bin/env perl
 
+use strict;
 use common::sense;
 
 use Device::Hue;
@@ -27,3 +28,5 @@ say
 say
     "If you have acquired an API key, set the environment variable 'HUE_KEY' to use the examples."
 
+# PODNAME: hue-discovery.pl
+# ABSTRACT: Discover the Philips Hue bridge on your local network.

@@ -1,5 +1,6 @@
 #!/usr/bin/env perl
 
+use strict;
 use common::sense;
 
 use Device::Hue;
@@ -12,3 +13,6 @@ my ( $light, $ct ) = @ARGV;
 my $hue = new Device::Hue;
 
 $hue->light($light)->ct_k($ct);
+
+# PODNAME: hue-kelvin.pl
+# ABSTRACT: set the color temperature of your Philips Hue lights
