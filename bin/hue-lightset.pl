@@ -1,5 +1,6 @@
 #!/usr/bin/env perl
 
+use strict;
 use common::sense;
 
 use Device::Hue;
@@ -15,3 +16,5 @@ sleep 2;
 
 $set->off;
 
+# PODNAME: hue-lightset.pl
+# ABSTRACT: example program that shows how to control a set of Philips Hue lights with the Device::Hue module.
