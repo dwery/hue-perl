@@ -1,5 +1,6 @@
 #!/usr/bin/env perl
 
+use strict;
 use common::sense;
 
 use Device::Hue;
@@ -20,3 +21,5 @@ sleep 1;
 $l->begin->bri(1)->ct_k($temp)->on->commit;
 $l->begin->transitiontime( $minutes * 60 * 10 )->bri(255)->commit;
 
+# PODNAME: hue-wake.pl
+# ABSTRACT: implement wake-up light behavior with a Philips Hue device
